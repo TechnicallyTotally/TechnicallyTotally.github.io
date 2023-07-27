@@ -977,6 +977,12 @@
 					local tname = argstable["Name"]
 					local nTip = argstable["InfoText"] or ""
 					local callback = argstable["Function"]
+					
+					local defaultState = argstable["Default"] or false
+					do
+                        TogFunction:UpdateToggle(nil, defaultState)
+                    end
+					
 					local TogFunction = {}
 					local toggled = false
 					table.insert(SettingsT, tname)
@@ -1655,7 +1661,7 @@
 					moreInfo.TextColor3 = themeList.TextColor
 					moreInfo.TextSize = 14.000
 					moreInfo.TextXAlignment = Enum.TextXAlignment.Left
-
+                    
 					local hovering = false
 					btn.MouseEnter:Connect(function()
 						if not focusing then
@@ -1717,7 +1723,27 @@
 							viewDe = false
 						end
 					end)     
+                    local defaultValue = argstable["Default"] or false
+                    if defaultValue then
+                       if type(defaultValue) ~= "string" then
+                         return error("Default value must be a string.")
+                       end
 
+                       local defaultItemFound = false
+                            for _, item in ipairs(list) do
+                               if item == defaultValue then
+                                  defaultItemFound = true
+                                  break
+                               end
+                            end
+
+                            if not defaultItemFound then
+                               return error("Default value does not match any of the dropdown items.")
+                            end
+                            
+                            itemTextbox.Text = defaultValue
+                            callback(defaultValue)
+                    end
 					for i,v in next, list do
 						local optionSelect = Instance.new("TextButton")
 						local UICorner_2 = Instance.new("UICorner")
